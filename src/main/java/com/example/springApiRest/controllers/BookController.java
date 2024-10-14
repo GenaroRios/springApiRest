@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping ("/api/book")
 public class BookController {
 
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
@@ -23,14 +24,14 @@ public class BookController {
     // CRUD de la entidad Book
 
     // Buscar todos los libros
-    @GetMapping("/api/books")
+    @GetMapping("/all")
     public List<Book> findAll(){
         return this.repository.findAll();
     }
 
     // Buscar un libro segun su id
     // ResponseEntity sirve para devolver respuestas HTTP en funcion de la respuesta
-    @GetMapping("/api/book/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Book> findById(@PathVariable Long id){
         Optional<Book> bookOpt = this.repository.findById(id);
         if(bookOpt.isPresent()) // 200 OK
@@ -50,7 +51,7 @@ public class BookController {
     }
 
     // Actualizar un libro existente
-    @PutMapping("/api/book/update")
+    @PutMapping("/update")
     public ResponseEntity<Book> updateBook(@RequestBody Book toUpdate){
         if (toUpdate.getId() == null)
         {
@@ -68,7 +69,7 @@ public class BookController {
     }
 
     // Borrar un libro en BDD
-    @DeleteMapping ("/api/book/{id}")
+    @DeleteMapping ("/{id}")
     public ResponseEntity<Book> deleteBook(@PathVariable Long id)
     {
         if(!this.repository.existsById(id)) // 204 no content
