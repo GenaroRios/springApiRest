@@ -25,26 +25,36 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity //Esta notacion nos sirve para configurar el acceso a los endpoints a traves de notaciones
 public class WebSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception{
         return httpSecurity
+                /**
+                 * Desactivamos las defensas contra csrf ya que son solo necesarias en formularios
+                 */
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(Customizer.withDefaults())
+                /**
+                 * Establecemos de que manera va a trabajar la sesion. Con STATELESS le decimos que no guarde la sesion en memoria.
+                 */
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(http -> {
-                    // Configurar endpoints publicos
+                /**
+                 * De esta manera podemos configurar de que forma se va a poder acceder a cada uno de los endpoints.
+                 * Hay otra manera de hacer esto y es con notaciones, lo que simplificaria mucho mas el codigo.
+                 */
+                /*.authorizeHttpRequests(http -> {
+                    /// Configurar endpoints publicos
                     http.requestMatchers(HttpMethod.GET, "/api/book/all").hasAuthority("READ");
 
-                    //Configurar endpoints privados
+                    /// Configurar endpoints privados
                     http.requestMatchers(HttpMethod.DELETE, "/api/book/{id}").hasAuthority("DELETE");
 
-                    // Configurar el resto de endpoints - NO ESPECIFICADOS
+                    /// Configurar el resto de endpoints - NO ESPECIFICADOS
                     http.anyRequest().denyAll(); //Niega toda peticion a un endpoint no especificado
                     //http.anyRequest().authorize(); Solo permite peticiones autenticadas a endpoints no especificados
-                })
+                })*/
                 .build();
     }
 

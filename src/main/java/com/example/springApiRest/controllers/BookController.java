@@ -5,6 +5,7 @@ import com.example.springApiRest.repositories.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping ("/api/book")
+@PreAuthorize("denyAll()")
 public class BookController {
 
     private static final Logger log = LoggerFactory.getLogger(BookController.class);
@@ -25,6 +27,7 @@ public class BookController {
 
     // Buscar todos los libros
     @GetMapping("/all")
+    @PreAuthorize("permitAll()")
     public List<Book> findAll(){
         return this.repository.findAll();
     }
@@ -32,6 +35,7 @@ public class BookController {
     // Buscar un libro segun su id
     // ResponseEntity sirve para devolver respuestas HTTP en funcion de la respuesta
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('READ')")
     public ResponseEntity<Book> findById(@PathVariable Long id){
         Optional<Book> bookOpt = this.repository.findById(id);
         if(bookOpt.isPresent()) // 200 OK
@@ -45,6 +49,7 @@ public class BookController {
 
     // Crear un nuevo libro en BDD
     @PostMapping("/api/book/new")
+    @PreAuthorize("hasAuthority('CREATE')")
     public Book newBook (@RequestBody Book libro)
     {
         return this.repository.save(libro);
@@ -52,6 +57,7 @@ public class BookController {
 
     // Actualizar un libro existente
     @PutMapping("/update")
+    @PreAuthorize("hasAuthority('CREATE')")
     public ResponseEntity<Book> updateBook(@RequestBody Book toUpdate){
         if (toUpdate.getId() == null)
         {
@@ -70,6 +76,7 @@ public class BookController {
 
     // Borrar un libro en BDD
     @DeleteMapping ("/{id}")
+    @PreAuthorize("hasAuthority('DELETE')")
     public ResponseEntity<Book> deleteBook(@PathVariable Long id)
     {
         if(!this.repository.existsById(id)) // 204 no content

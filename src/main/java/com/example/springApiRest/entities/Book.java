@@ -13,7 +13,8 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private  String title;
-    private String author;
+    @ManyToOne(targetEntity = PersonEntity.class, fetch = FetchType.EAGER)
+    private PersonEntity author;
     private Integer pages;
     private Double price;
     private LocalDate releaseData;
@@ -22,7 +23,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, String author, Integer pages, Double price, LocalDate releaseData, Boolean online) {
+    public Book(String title, PersonEntity author, Integer pages, Double price, LocalDate releaseData, Boolean online) {
         this.title = title;
         this.author = author;
         this.pages = pages;
@@ -43,11 +44,11 @@ public class Book {
         this.title = title;
     }
 
-    public String getAuthor() {
+    public PersonEntity getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(PersonEntity author) {
         this.author = author;
     }
 
